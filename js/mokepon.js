@@ -24,10 +24,12 @@ const ataqueDelEnemigo = document.getElementById('ataques-enemigo');
 // testing
 const tarjetas = document.getElementById('tarjetas');
 
-let ataqueJugador;
-let ataqueEnemigo;
 let vidasJugador = 3;
 let vidasEnemigo = 3;
+let mascotaJugador;
+let mascotaEnemigo;
+let ataqueJugador;
+let ataqueEnemigo;
 
 let mokepones = [];
 class Mokepon {
@@ -48,12 +50,35 @@ class Mokepon {
 let hipodogeImg = './assets/mokepons_mokepon_hipodoge_attack.png';
 let capipepoImg = './assets/mokepons_mokepon_capipepo_attack.png';
 let ratigueyaImg = './assets/mokepons_mokepon_ratigueya_attack.png';
+let rattataImg = './assets/Rattata.png';
 
 let hipodoge = new Mokepon('Hipodoge', hipodogeImg, 5);
 let capipepo = new Mokepon('Capipepo', capipepoImg, 5);
 let ratigueya = new Mokepon('Ratigueya', ratigueyaImg, 5);
+let rattata = new Mokepon('Rattata', rattataImg, 5);
+
+function loadImages(){
+    mokepones.forEach(mokepon => {
+        let nuevoInputMascota = document.createElement('input');
+        nuevoInputMascota.type = 'radio';
+        nuevoInputMascota.name = 'mascota';
+        let nuevoLabelMascota = document.createElement('label');
+        nuevoLabelMascota.className = 'tarjeta-de-mokepon';
+        let nuevoParrafoMascota = document.createElement('p');
+        let nuevaImgMascota = document.createElement('img');
+        nuevoLabelMascota.appendChild(nuevoParrafoMascota);
+        nuevoLabelMascota.appendChild(nuevaImgMascota);
+
+        nuevoLabelMascota.htmlFor = nuevoInputMascota.id = mokepon.nombre.toLowerCase();
+        nuevaImgMascota.alt = nuevoParrafoMascota.innerHTML = mokepon.nombre;
+        nuevaImgMascota.src = mokepon.foto;
+        tarjetas.append(nuevoInputMascota);
+        tarjetas.append(nuevoLabelMascota);
+    })
+}
 
 function iniciarJuego() {
+    loadImages();
     sectionSeleccionarAtaque.style.display = 'none';
     sectionReiniciar.style.display = 'none';
 
@@ -68,37 +93,26 @@ function iniciarJuego() {
 
 function seleccionarMascotaJugador() {
     sectionSeleccionarMascota.style.display = 'none';
+    let mascotaSeleccionada = mokepones.find(mokepon => document.getElementById(mokepon.nombre.toLowerCase()).checked);
 
-    let mascotaJugador;
-    if(inputHipoDoge.checked){
-        mascotaJugador = spanMascotaJugador.innerHTML = 'Hipodoge';
-    } else if(inputCapipepo.checked) {
-        mascotaJugador = spanMascotaJugador.innerHTML = 'Capipepo';
-    } else if(inputRatigueya.checked) {
-        mascotaJugador = spanMascotaJugador.innerHTML = 'Ratigueya';
-    } else {
+    if(mascotaSeleccionada === undefined){
         alert('Selecciona una mascota');
         location.reload();
+    } else {
+        mascotaJugador = mascotaSeleccionada;
+        spanMascotaJugador.innerHTML = mascotaJugador.nombre;
     }
-    seleccionarMascotaEnemigo();
+    seleccionarMascotaEnemigo(mascotaJugador);
 }
 
-function seleccionarMascotaEnemigo() {
-    let mascotaAleatoria = aleatorio(1, 3);
-    let mascotaEnemigo;
-    switch (mascotaAleatoria) {
-        case 1:
-            mascotaEnemigo = 'Hipodoge';
-            break;
-        case 2:
-            mascotaEnemigo = 'Capipepo';
-            break;
-        case 3:
-            mascotaEnemigo = 'Ratigueya';
-            break;
+function seleccionarMascotaEnemigo(mascotaJugador) {
+    let mascotaAleatoria = mokepones[aleatorio(0, mokepones.length - 1)];
+    if (mascotaAleatoria === mascotaJugador) {
+        seleccionarMascotaEnemigo(mascotaJugador);
+    } else {
+        spanMascotaEnemigo.innerHTML = mascotaAleatoria.nombre;
+        sectionSeleccionarAtaque.style.display = 'flex';
     }
-    spanMascotaEnemigo.innerHTML = mascotaEnemigo;
-    sectionSeleccionarAtaque.style.display = 'flex';
 }
 
 function ataqueFuego(){
