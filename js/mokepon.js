@@ -1,8 +1,3 @@
-let ataqueJugador;
-let ataqueEnemigo;
-let vidasJugador = 3;
-let vidasEnemigo = 3;
-
 const sectionSeleccionarAtaque = document.getElementById('seleccionar-ataque');
 const sectionReiniciar = document.getElementById('reiniciar');
 const botonMascotaJugador = document.getElementById('boton-mascota');
@@ -25,6 +20,38 @@ const spanVidasEnemigo = document.getElementById('vidas-enemigo');
 const sectionMensajes = document.getElementById('resultado');
 const ataqueDelJugador = document.getElementById('ataques-jugador');
 const ataqueDelEnemigo = document.getElementById('ataques-enemigo');
+
+// testing
+const tarjetas = document.getElementById('tarjetas');
+
+let ataqueJugador;
+let ataqueEnemigo;
+let vidasJugador = 3;
+let vidasEnemigo = 3;
+
+let mokepones = [];
+class Mokepon {
+    constructor(nombre, foto, vida){
+        this.nombre = nombre;
+        this.foto = foto;
+        this.vida = vida;
+        mokepones.push(this);
+    }
+    getName(){
+        return this.nombre;
+    }
+    setName(name){
+        this.nombre = name;
+    }
+}
+
+let hipodogeImg = './assets/mokepons_mokepon_hipodoge_attack.png';
+let capipepoImg = './assets/mokepons_mokepon_capipepo_attack.png';
+let ratigueyaImg = './assets/mokepons_mokepon_ratigueya_attack.png';
+
+let hipodoge = new Mokepon('Hipodoge', hipodogeImg, 5);
+let capipepo = new Mokepon('Capipepo', capipepoImg, 5);
+let ratigueya = new Mokepon('Ratigueya', ratigueyaImg, 5);
 
 function iniciarJuego() {
     sectionSeleccionarAtaque.style.display = 'none';
