@@ -71,14 +71,14 @@ let rattata = new Mokepon('Rattata', rattataImg, 1100, 'TIERRA');
 let ratatuille = new Mokepon('Ratatuille', ratatuilleImg, 1400, 'VIENTO');
 
 let ataques = [
-    new Ataque('FUEGO', '🔥', 'BOLA DE FUEGO', 200, 350, 150, 5),
-    new Ataque('FUEGO', '🔥', 'LLAMARADA', 150, 250, 100, 3),
-    new Ataque('AGUA', '💧', 'BOLA DE AGUA', 220, 310, 120, 4),
-    new Ataque('AGUA', '💧', 'AGUADA', 120, 240, 80, 2),
-    new Ataque('TIERRA', '🌱', 'BOLA DE TIERRA', 250, 300, 180, 8),
-    new Ataque('TIERRA', '🌱', 'TIERRADA', 100, 200, 130, 2),
-    new Ataque('VIENTO', '🌪️','BOLA DE VIENTO', 220, 300, 80, 2),
-    new Ataque('VIENTO', '🌪️','VIENTADA', 80, 300, 200, 6),
+    new Ataque('FUEGO', 'BOLA DE FUEGO', '🔥', 200, 350, 150, 5),
+    new Ataque('FUEGO', 'LLAMARADA', '🔥', 150, 250, 100, 3),
+    new Ataque('AGUA', 'BOLA DE AGUA', '💧', 220, 310, 120, 4),
+    new Ataque('AGUA', 'AGUADA', '💧', 120, 240, 80, 2),
+    new Ataque('TIERRA', 'BOLA DE TIERRA', '🌱', 250, 300, 180, 8),
+    new Ataque('TIERRA', 'TIERRADA', '🌱', 100, 200, 130, 2),
+    new Ataque('VIENTO','BOLA DE VIENTO', '🌪️', 220, 300, 80, 2),
+    new Ataque('VIENTO','VIENTADA', '🌪️', 80, 300, 200, 6),
 ];
 
 function loadImages(){
@@ -111,6 +111,17 @@ function loadAtaques(){
         ataque.id = nuevoBotonAtaque.id = ataque.nombre.split(' ').join('-').toLowerCase();
         botonesAtaque.appendChild(nuevoBotonAtaque);
     });
+    waitForAtack();
+}
+
+function waitForAtack(){
+    ataquesMascota.forEach(atack => {
+        document.getElementById(atack.id).addEventListener('click', ()=>{console.log(atack)});
+    });
+}
+
+function battle(atack){
+
 }
 
 function iniciarJuego() {
@@ -138,6 +149,7 @@ function seleccionarMascotaJugador() {
         mascotaJugador = mascotaSeleccionada;
         spanMascotaJugador.innerHTML = mascotaJugador.nombre;
     }
+    spanVidasJugador.innerHTML = vidasJugador = mascotaJugador.vida;    
     seleccionarMascotaEnemigo(mascotaJugador);
     loadAtaques();
 }
@@ -148,6 +160,7 @@ function seleccionarMascotaEnemigo(mascotaJugador) {
         seleccionarMascotaEnemigo(mascotaJugador);
     } else {
         spanMascotaEnemigo.innerHTML = mascotaAleatoria.nombre;
+        spanVidasEnemigo.innerHTML = vidasEnemigo = mascotaAleatoria.vida;
         sectionSeleccionarAtaque.style.display = 'flex';
     }
 }
@@ -221,9 +234,9 @@ function crearMensajeFinal(resultadoFinal){
 }
 
 function revisarVidas(){
-    if (vidasJugador == 0) {
+    if (vidasJugador <= 0) {
         crearMensajeFinal('LO SIENTO, PERDISTE');
-    } else if(vidasEnemigo == 0) {
+    } else if(vidasEnemigo <= 0) {
         crearMensajeFinal('FELICITACIONES GANASTE');
     }
 }
