@@ -21,9 +21,17 @@ const sectionMensajes = document.getElementById('resultado');
 const ataqueDelJugador = document.getElementById('ataques-jugador');
 const ataqueDelEnemigo = document.getElementById('ataques-enemigo');
 
-// testing
+// Diferent
 const tarjetas = document.getElementById('tarjetas');
 const botonesAtaque = document.getElementById('botones-ataque');
+//
+let mascotaAleatoria;
+
+let nuevoInputMascota;
+let nuevoLabelMascota;
+let nuevoParrafoMascota;
+let nuevaImgMascota ;
+
 
 let vidasJugador = 3;
 let vidasEnemigo = 3;
@@ -83,13 +91,13 @@ let ataques = [
 
 function loadImages(){
     mokepones.forEach(mokepon => {
-        let nuevoInputMascota = document.createElement('input');
+        nuevoInputMascota = document.createElement('input');
         nuevoInputMascota.type = 'radio';
         nuevoInputMascota.name = 'mascota';
-        let nuevoLabelMascota = document.createElement('label');
+        nuevoLabelMascota = document.createElement('label');
         nuevoLabelMascota.className = 'tarjeta-de-mokepon';
-        let nuevoParrafoMascota = document.createElement('p');
-        let nuevaImgMascota = document.createElement('img');
+        nuevoParrafoMascota = document.createElement('p');
+        nuevaImgMascota = document.createElement('img');
         nuevoLabelMascota.appendChild(nuevoParrafoMascota);
         nuevoLabelMascota.appendChild(nuevaImgMascota);
 
@@ -116,13 +124,33 @@ function loadAtaques(){
 
 function waitForAtack(){
     ataquesMascota.forEach(atack => {
-        document.getElementById(atack.id).addEventListener('click', ()=>{console.log(atack)});
+        document.getElementById(atack.id).addEventListener('click', ()=>{
+            console.log(atack); // battle
+        });
     });
 }
 
-function battle(atack){
-
+/* 
+function randomEnemyAtack(){
+    let randomAtack
 }
+function battle(atack){
+    let nuevasVidasJugador = document.getElementById('vidas-jugador');
+    let nuevasVidasEnemigo = document.getElementById('vidas-enemigo');
+    let nuevaMascotaJugador = document.getElementById('mascota-jugador');
+    let nuevaMascotaEnemigo = document.getElementById('mascota-enemigo');
+    let nuevoAtaqueJugador = document.getElementById('ataque-jugador');
+    let nuevoAtaqueEnemigo = document.getElementById('ataque-enemigo');
+    let nuevosAtaquesJugador = document.getElementById('ataques-jugador');
+    let nuevosAtaquesEnemigo = document.getElementById('ataques-enemigo');
+
+    nuevasVidasJugador.innerHTML = combat(atack);
+}
+
+function combat(){
+
+}  
+*/
 
 function iniciarJuego() {
     loadImages();
@@ -155,10 +183,11 @@ function seleccionarMascotaJugador() {
 }
 
 function seleccionarMascotaEnemigo(mascotaJugador) {
-    let mascotaAleatoria = mokepones[aleatorio(0, mokepones.length - 1)];
+    mascotaAleatoria = deepCopy(mokepones[aleatorio(0, mokepones.length - 1)]);
     if (mascotaAleatoria === mascotaJugador) {
         seleccionarMascotaEnemigo(mascotaJugador);
     } else {
+        mascotaEnemigo = deepCopy(mascotaAleatoria);
         spanMascotaEnemigo.innerHTML = mascotaAleatoria.nombre;
         spanVidasEnemigo.innerHTML = vidasEnemigo = mascotaAleatoria.vida;
         sectionSeleccionarAtaque.style.display = 'flex';
@@ -259,3 +288,38 @@ function aleatorioEnArray(array){
 }
 
 window.addEventListener('load', iniciarJuego);
+
+function isObject(subject) {
+    return typeof subject == "object";
+}
+function isArray(subject) {
+    return Array.isArray(subject);
+}
+function deepCopy(subject, newName) {
+    let copy;
+    const subjectIsArray = isArray(subject);
+    const subjectIsObject = isObject(subject);
+
+    if (subjectIsArray) {
+        copy = [];
+    } else if (subjectIsObject) {
+        copy = {};
+    } else {
+        return subject;
+    }
+
+    for (key in subject) {
+        const keyIsObject = isObject(subject[key])
+        if (keyIsObject) {
+            copy[key] = deepCopy(subject[key]);
+        } else {
+            if (subjectIsArray) {
+                copy.push(subject[key]);
+            } else {
+                copy[key] = subject[key];
+            }
+        }
+    }
+    copy.name = newName;
+    return copy;
+}
