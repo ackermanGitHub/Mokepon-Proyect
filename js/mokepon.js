@@ -23,7 +23,7 @@ const ataqueDelEnemigo = document.getElementById('ataques-enemigo');
 
 // testing
 const tarjetas = document.getElementById('tarjetas');
-const botones = document.getElementById('botones');
+const botonesAtaque = document.getElementById('botones-ataque');
 
 let vidasJugador = 3;
 let vidasEnemigo = 3;
@@ -45,9 +45,10 @@ class Mokepon {
     }
 }
 class Ataque {
-    constructor(elemento, nombre, dañoMin, dañoMax, dañoCritico, prob){
+    constructor(elemento, nombre, emoji, dañoMin, dañoMax, dañoCritico, prob){
         this.elemento = elemento;
         this.nombre = nombre;
+        this.emoji = emoji;
         this.daño = {
             dañoMin: dañoMin,
             dañoMax: dañoMax,
@@ -63,21 +64,21 @@ let ratigueyaImg = './assets/mokepons_mokepon_ratigueya_attack.png';
 let rattataImg = './assets/Rattata.png';
 let ratatuilleImg = './assets/ratatuille.png';
 
-let hipodoge = new Mokepon('Hipodoge', hipodogeImg, 5, 'AGUA');
-let capipepo = new Mokepon('Capipepo', capipepoImg, 5, 'TIERRA');
-let ratigueya = new Mokepon('Ratigueya', ratigueyaImg, 5, 'FUEGO');
-let rattata = new Mokepon('Rattata', rattataImg, 5, 'TIERRA');
-let ratatuille = new Mokepon('Ratatuille', ratatuilleImg, 5, 'VIENTO');
+let hipodoge = new Mokepon('Hipodoge', hipodogeImg, 1200, 'AGUA');
+let capipepo = new Mokepon('Capipepo', capipepoImg, 1500, 'TIERRA');
+let ratigueya = new Mokepon('Ratigueya', ratigueyaImg, 1000, 'FUEGO');
+let rattata = new Mokepon('Rattata', rattataImg, 1100, 'TIERRA');
+let ratatuille = new Mokepon('Ratatuille', ratatuilleImg, 1400, 'VIENTO');
 
 let ataques = [
-    new Ataque('FUEGO', 'BOLA DE FUEGO', 200, 350, 150, 5),
-    new Ataque('FUEGO', 'LLAMARADA', 150, 250, 100, 3),
-    new Ataque('AGUA', 'BOLA DE AGUA', 220, 310, 120, 4),
-    new Ataque('AGUA', 'AGUADA', 120, 240, 80, 2),
-    new Ataque('TIERRA', 'BOLA DE TIERRA', 250, 300, 180, 8),
-    new Ataque('TIERRA', 'TIERRADA', 100, 200, 130, 2),
-    new Ataque('VIENTO', 'BOLA DE VIENTO', 220, 300, 80, 2),
-    new Ataque('VIENTO', 'VIENTADA', 80, 300, 200, 6),
+    new Ataque('FUEGO', '🔥', 'BOLA DE FUEGO', 200, 350, 150, 5),
+    new Ataque('FUEGO', '🔥', 'LLAMARADA', 150, 250, 100, 3),
+    new Ataque('AGUA', '💧', 'BOLA DE AGUA', 220, 310, 120, 4),
+    new Ataque('AGUA', '💧', 'AGUADA', 120, 240, 80, 2),
+    new Ataque('TIERRA', '🌱', 'BOLA DE TIERRA', 250, 300, 180, 8),
+    new Ataque('TIERRA', '🌱', 'TIERRADA', 100, 200, 130, 2),
+    new Ataque('VIENTO', '🌪️','BOLA DE VIENTO', 220, 300, 80, 2),
+    new Ataque('VIENTO', '🌪️','VIENTADA', 80, 300, 200, 6),
 ];
 
 function loadImages(){
@@ -100,15 +101,17 @@ function loadImages(){
     })
 }
 
-/* function loadAtaques(){
+function loadAtaques(){
     ataquesMascota = ataques.filter(ataque => ataque.elemento === mascotaJugador.elemento);
+    let nuevoBotonAtaque;
     ataquesMascota.forEach(ataque => {
-        let nuevoBotonAtaque = document.createElement('button');
+        nuevoBotonAtaque = document.createElement('button');
         nuevoBotonAtaque.className = 'boton-ataque';
+        nuevoBotonAtaque.innerHTML = ataque.nombre + ' ' + ataque.emoji;
         ataque.id = nuevoBotonAtaque.id = ataque.nombre.split(' ').join('-').toLowerCase();
-        botones.appendChild(nuevoBotonAtaque);
+        botonesAtaque.appendChild(nuevoBotonAtaque);
     });
-} */
+}
 
 function iniciarJuego() {
     loadImages();
@@ -136,6 +139,7 @@ function seleccionarMascotaJugador() {
         spanMascotaJugador.innerHTML = mascotaJugador.nombre;
     }
     seleccionarMascotaEnemigo(mascotaJugador);
+    loadAtaques();
 }
 
 function seleccionarMascotaEnemigo(mascotaJugador) {
