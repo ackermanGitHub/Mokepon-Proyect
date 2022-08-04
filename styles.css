@@ -3,26 +3,26 @@ body {
   font-family: 'Poppins', sans-serif;
   background-color: #041562;
 }
-#seleccionar-mascota {
+#select-mokepon-section {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
-.titulo {
+.head-tittle {
     font-size: 32px;
     color: white;
     font-family: 'Fredoka One', cursive;
 }
-.subtitulo {
+.section-tittle {
     font-size: 20px;
     color: white;
 }
-.tarjetas, .tarjetas-ataques {
+.mokepon-cards, .attacks-cards {
     display: flex;
     gap: 10px;
 }
-.tarjeta-de-mokepon {
+.mokepon-card {
     width: 180px;
     height: 100px;
     background: #11468F;
@@ -37,10 +37,10 @@ body {
 input:checked + label {
     background: #5D88F4;
 }
-.tarjeta-de-mokepon img {
+.mokepon-card img {
     width: 80px;
 }
-#boton-mascota {
+#select-mokepon-btn {
     width: 180px;
     height: 40px;
     border-radius: 20px;
@@ -53,12 +53,12 @@ input:checked + label {
 input {
     display: none;
 }
-#seleccionar-ataque {
+#select-attack {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-.boton-ataque {
+.attack-btn {
     background-color: #11468F;
     padding: 10px;
     box-sizing: border-box;
@@ -68,10 +68,10 @@ input {
     color: white;
     font-family: 'Poppins', sans-serif;
 }
-.boton-ataque:active {
+.attack-btn:active {
     background-color: aqua;
 }
-#mensajes {
+#message-conteiner {
     width: 50vw;
     background: #EEEEEE;
     font-weight: bold;
@@ -83,28 +83,28 @@ input {
     flex-direction: column;
     font-family: 'Poppins', sans-serif;
 }
-#boton-reiniciar {
+#restart-button {
     border: none;
     color: #11468F;
     font-family: 'Poppins', sans-serif;
 }
-.ataques {
+.attacks {
     display: grid;
     grid-template-columns: 100px 100px;
     color: white;
 }
-#vidas-jugador, #vidas-enemigo {
+#lives-player, #lives-enemy {
     font-size: 32px;
     margin-bottom: 0;
 }
-.ataque-jugador, .ataque-enemigo {
+.attacks-player, .attacks-enemy {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 @media (max-width: 580px) {
-    .tarjetas, .tarjetas-ataques {
+    .mokepon-cards, .attacks-cards {
         flex-direction: column;
     }
 }
