@@ -160,7 +160,7 @@ function startGame() {
 }
 
 function joinGame(){
-    fetch("http://localhost:8080/unirse")
+    fetch('http://localhost:8080/unirse')
         .then((res) => {
             console.log(res)
             if (res.ok) {
@@ -183,9 +183,16 @@ function selectPlayerMokepon() {
         playerMokepon = selectedMokepon;
         playerMokeponParagraph.innerHTML = playerMokepon.name;
     }
+
+    selectMokepon(playerMokepon)
+
     livesPlayerParagraph.innerHTML = playerLives = playerMokepon.lives;    
     selectEnemyMokepon(playerMokepon);
     loadAttacks();
+}
+
+function selectMokepon(playerMokepon){
+    fetch('http://localhost:8080/mokepon' + playerId)
 }
 
 function selectEnemyMokepon(playerMokepon) {
@@ -234,7 +241,7 @@ function randomNum(min, max){
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 function isObject(subject) {
-    return typeof subject == "object";
+    return typeof subject == 'object';
 }
 function isArray(subject) {
     return Array.isArray(subject);

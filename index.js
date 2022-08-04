@@ -1,6 +1,10 @@
 const express = require("express")
+const cors = require("cors")
 
 const app = express()
+
+app.use(cors())
+app.use(express.json())
 
 const jugadores = []
 
@@ -16,6 +20,13 @@ app.get("/unirse", (req, res) => {
     jugadores.push(jugador)
     res.setHeader("Access-Control-Allow-Origin", "*")
     res.send(id)
+})
+
+app.post("/mokepon/:playerId", (req, res) => {
+    const playerId = req.params.playerId || ""
+    console.log(jugadores)
+    console.log(jugadorId)
+    res.end()
 })
 
 app.listen(8080, () => {
