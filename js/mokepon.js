@@ -20,6 +20,7 @@ const attackEnemyDiv = document.getElementById('attacks-enemy');
 const cardsArticle = document.getElementById('mokepon-cards');
 const attackBtnsArticle = document.getElementById('attack-btns');
 
+let playerId = null
 let playerLives = 3;
 let enemyLives = 3;
 let playerMokepon;
@@ -62,21 +63,24 @@ let capipepoImg = './assets/mokepons_mokepon_capipepo_attack.png';
 let ratigueyaImg = './assets/mokepons_mokepon_ratigueya_attack.png';
 let rattataImg = './assets/Rattata.png';
 let ratatuilleImg = './assets/ratatuille.png';
+let charmanderImg = './assets/charmander.png';
 
 const bolaFuego = new Attack('FUEGO', 'BOLA DE FUEGO', '🔥', 200, 350, 150, 5);
 const llamarada = new Attack('FUEGO', 'LLAMARADA', '🔥', 150, 250, 100, 3);
 const bolaAgua = new Attack('AGUA', 'BOLA DE AGUA', '💧', 220, 310, 120, 4);
-const aguada = new Attack('AGUA', 'AGUADA', '💧', 120, 240, 80, 2);
+const tsunami = new Attack('AGUA', 'TSUNAMI', '💧', 120, 240, 80, 2);
 const bolaTierra = new Attack('TIERRA', 'BOLA DE TIERRA', '🌱', 250, 300, 180, 8);
-const tierrada = new Attack('TIERRA', 'TIERRADA', '🌱', 100, 200, 130, 2);
+const avalancha = new Attack('TIERRA', 'AVALANCHA', '🌱', 100, 200, 130, 2);
 const bolaViento = new Attack('VIENTO','BOLA DE VIENTO', '🌪️', 220, 300, 80, 2);
-const vientada = new Attack('VIENTO','VIENTADA', '🌪️', 80, 300, 200, 6);
+const tormenta = new Attack('VIENTO','TORMENTA', '🌪️', 80, 300, 200, 6);
+const pinchos = new Attack('FUEGO','PINCHOS', '🔥', 80, 300, 200, 6);
 
-let hipodoge = new Mokepon('Hipodoge', hipodogeImg, 1200, 'AGUA', [bolaAgua, aguada]);
-let capipepo = new Mokepon('Capipepo', capipepoImg, 1500, 'TIERRA', [bolaTierra, tierrada]);
+let hipodoge = new Mokepon('Hipodoge', hipodogeImg, 1200, 'AGUA', [bolaAgua, tsunami]);
+let capipepo = new Mokepon('Capipepo', capipepoImg, 1500, 'TIERRA', [bolaTierra, avalancha]);
 let ratigueya = new Mokepon('Ratigueya', ratigueyaImg, 1000, 'FUEGO', [bolaFuego, llamarada]);
-let rattata = new Mokepon('Rattata', rattataImg, 1100, 'TIERRA', [bolaTierra, tierrada]);
-let ratatuille = new Mokepon('Ratatuille', ratatuilleImg, 1400, 'VIENTO', [bolaViento, vientada]);
+let rattata = new Mokepon('Rattata', rattataImg, 1100, 'TIERRA', [bolaTierra, avalancha]);
+let ratatuille = new Mokepon('Ratatuille', ratatuilleImg, 1400, 'VIENTO', [bolaViento, tormenta]);
+const charmander = new Mokepon('Charmander', charmanderImg, 900, 'FUEGO', [bolaFuego, tormenta]);
 
 let newInputMokepon;
 let newLabelMokepon;
@@ -167,6 +171,7 @@ function joinGame(){
                 res.text()
                     .then((response) => {
                         console.log(response)
+                        playerId = response
                     })
             }
         })
@@ -184,7 +189,7 @@ function selectPlayerMokepon() {
         playerMokeponParagraph.innerHTML = playerMokepon.name;
     }
 
-    selectMokepon(playerMokepon)
+    //selectMokepon(playerMokepon)
 
     livesPlayerParagraph.innerHTML = playerLives = playerMokepon.lives;    
     selectEnemyMokepon(playerMokepon);
