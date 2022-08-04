@@ -1,0 +1,22 @@
+{
+  "name": "mokepon",
+  "version": "1.0.0",
+  "description": "A fantastic game to have fun",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ackermanGitHub/Mokepon-Proyect.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ackermanGitHub/Mokepon-Proyect/issues"
+  },
+  "homepage": "https://github.com/ackermanGitHub/Mokepon-Proyect#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
