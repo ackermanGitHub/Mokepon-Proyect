@@ -6,26 +6,43 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-const jugadores = []
+const players = []
 
-class Jugador {
+class Player {
     constructor(id){
         this.id = id
+    }
+    assignMokepon(mokepon) {
+        this.mokepon = mokepon
+    }
+}
+class Mokepon {
+    constructor(name){
+        this.name = name
     }
 }
 
 app.get("/unirse", (req, res) => {
     const id = `${Math.random()}`
-    const jugador = new Jugador(id)
-    jugadores.push(jugador)
+    const player = new Player(id)
+    players.push(player)
     res.setHeader("Access-Control-Allow-Origin", "*")
     res.send(id)
 })
 
 app.post("/mokepon/:playerId", (req, res) => {
     const playerId = req.params.playerId || ""
-    console.log(jugadores)
-    console.log(jugadorId)
+    const name = req.body.mokepon || ""
+    const mokepon = new Mokepon(name)
+    
+    const playerIndex = players.findIndex((player) => playerId === player.id)
+    
+    if (playerIndex >= 0) {
+        players[playerIndex].assignMokepon(mokepon)
+    }
+
+    console.log(players)
+    console.log(playerId)
     res.end()
 })
 

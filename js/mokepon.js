@@ -34,12 +34,11 @@ let mokepones = [];
 let attacksList = [];
 
 class Mokepon {
-    constructor(name, image, lives, element, attacks){
+    constructor(name, image, lives, element){
         this.name = name;
         this.image = image;
         this.lives = lives;
         this.element = element;
-        this.attacks = attacks;
         mokepones.push(this);
     }
 }
@@ -75,12 +74,12 @@ const bolaViento = new Attack('VIENTO','BOLA DE VIENTO', '🌪️', 220, 300, 80
 const tormenta = new Attack('VIENTO','TORMENTA', '🌪️', 80, 300, 200, 6);
 const pinchos = new Attack('FUEGO','PINCHOS', '🔥', 80, 300, 200, 6);
 
-let hipodoge = new Mokepon('Hipodoge', hipodogeImg, 1200, 'AGUA', [bolaAgua, tsunami]);
-let capipepo = new Mokepon('Capipepo', capipepoImg, 1500, 'TIERRA', [bolaTierra, avalancha]);
-let ratigueya = new Mokepon('Ratigueya', ratigueyaImg, 1000, 'FUEGO', [bolaFuego, llamarada]);
-let rattata = new Mokepon('Rattata', rattataImg, 1100, 'TIERRA', [bolaTierra, avalancha]);
-let ratatuille = new Mokepon('Ratatuille', ratatuilleImg, 1400, 'VIENTO', [bolaViento, tormenta]);
-const charmander = new Mokepon('Charmander', charmanderImg, 900, 'FUEGO', [bolaFuego, tormenta]);
+let hipodoge = new Mokepon('Hipodoge', hipodogeImg, 1200, 'AGUA');
+let capipepo = new Mokepon('Capipepo', capipepoImg, 1500, 'TIERRA');
+let ratigueya = new Mokepon('Ratigueya', ratigueyaImg, 1000, 'FUEGO');
+let rattata = new Mokepon('Rattata', rattataImg, 1100, 'TIERRA');
+let ratatuille = new Mokepon('Ratatuille', ratatuilleImg, 1400, 'VIENTO');
+const charmander = new Mokepon('Charmander', charmanderImg, 900, 'FUEGO');
 
 let newInputMokepon;
 let newLabelMokepon;
@@ -166,11 +165,9 @@ function startGame() {
 function joinGame(){
     fetch('http://localhost:8080/unirse')
         .then((res) => {
-            console.log(res)
             if (res.ok) {
                 res.text()
                     .then((response) => {
-                        console.log(response)
                         playerId = response
                     })
             }
@@ -189,7 +186,7 @@ function selectPlayerMokepon() {
         playerMokeponParagraph.innerHTML = playerMokepon.name;
     }
 
-    //selectMokepon(playerMokepon)
+    selectMokepon(playerMokepon)
 
     livesPlayerParagraph.innerHTML = playerLives = playerMokepon.lives;    
     selectEnemyMokepon(playerMokepon);
@@ -197,7 +194,15 @@ function selectPlayerMokepon() {
 }
 
 function selectMokepon(playerMokepon){
-    fetch('http://localhost:8080/mokepon' + playerId)
+    fetch('http://localhost:8080/mokepon/' + playerId,{
+        method: "post",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            mokepon: playerMokepon.name,
+        })
+    })
 }
 
 function selectEnemyMokepon(playerMokepon) {

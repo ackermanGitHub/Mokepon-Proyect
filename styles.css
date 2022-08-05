@@ -19,6 +19,8 @@ body {
     color: white;
 }
 .mokepon-cards, .attacks-cards {
+    flex-wrap: wrap;
+    justify-content: center;
     display: flex;
     gap: 10px;
 }
