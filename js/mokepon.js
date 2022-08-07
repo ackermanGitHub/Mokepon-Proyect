@@ -49,7 +49,9 @@ class Mokepon {
         this.x = 20;
         this.y = 30;
         this.width = 80;
-        this.heigth = 80;
+        this.height = 80;
+        this.mapImg = new Image();
+        this.mapImg.src = image;
         mokepones.push(this);
     }
 }
@@ -160,7 +162,7 @@ function battle(){
     playerLives -= enemyDamage;
     livesEnemyParagraph.innerHTML = enemyLives;
     checkLives();
-    setTimeout(printLifes, 2000);
+    setTimeout(printLifes, 1500);
 }
 function printLifes(){
     livesPlayerParagraph.innerHTML = playerLives;
@@ -177,12 +179,11 @@ function startGame() {
     openMapBtn.addEventListener('click', () => {
         openMap = true;
         selectPlayerMokepon();
-        canvas.drawImage(rattataImg, 20, 40, 100, 100);
     })
     
     restartBtn.addEventListener('click', restartGame);
 
-    joinGame();
+    //joinGame();
 }
 
 function joinGame(){
@@ -210,7 +211,7 @@ function selectPlayerMokepon() {
         playerMokeponParagraph.innerHTML = playerMokepon.name;
     }
 
-    selectMokepon(playerMokepon)
+    //selectMokepon(playerMokepon)
 
     livesPlayerParagraph.innerHTML = playerLives = playerMokepon.lives;    
     selectEnemyMokepon(playerMokepon);
@@ -230,21 +231,43 @@ function selectMokepon(playerMokepon){
 }
 
 function selectEnemyMokepon(playerMokepon) {
-    let randomMokepon = deepCopy(mokepones[randomNum(0, mokepones.length - 1)]);
+    let randomMokepon = {...mokepones[randomNum(0, mokepones.length - 1)]};
     if (randomMokepon.name === playerMokepon.name) {
         console.log('Se llevó a cabo una seleccion semejante de mascota enemiga: ' + randomMokepon.name)
         selectEnemyMokepon(playerMokepon);
     } else {
-        enemyMokepon = deepCopy(randomMokepon);
+        enemyMokepon = {...randomMokepon};
         enemyMokeponParagraph.innerHTML = randomMokepon.name;
         livesEnemyParagraph.innerHTML = enemyLives = randomMokepon.lives;
         if (openMap) {
             watchMapSection.style.display = 'flex';
+            paintCharacter();
         } else {
             selectAttackSection.style.display = 'flex';
         }
         attackListEnemy = attacksList.filter(attack => attack.element === enemyMokepon.element);
     }
+}
+
+function paintCharacter(){
+    canvas.clearRect(0, 0, map.width, map.height);
+    canvas.drawImage(playerMokepon.mapImg, playerMokepon.x, playerMokepon.y, playerMokepon.width, playerMokepon.height);
+}
+function moveMokeponRight(){
+    playerMokepon.x += 5;
+    paintCharacter();
+}
+function moveMokeponLeft(){
+    playerMokepon.x -= 5;
+    paintCharacter();
+}
+function moveMokeponUp(){
+    playerMokepon.y -= 5;
+    paintCharacter();
+}
+function moveMokeponDown(){
+    playerMokepon.y += 5;
+    paintCharacter();
 }
 
 function printFinalMessage(message){
