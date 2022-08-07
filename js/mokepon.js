@@ -24,6 +24,8 @@ const attackBtnsArticle = document.getElementById('attack-btns');
 const watchMapSection = document.getElementById("watch-map");
 const openMapBtn = document.getElementById("open-map-btn");
 const map = document.getElementById("map");
+let openMap = false;
+let canvas = map.getContext("2d")
 
 let playerId = null;
 let playerLives = 3;
@@ -44,6 +46,10 @@ class Mokepon {
         this.image = image;
         this.lives = lives;
         this.element = element;
+        this.x = 20;
+        this.y = 30;
+        this.width = 80;
+        this.heigth = 80;
         mokepones.push(this);
     }
 }
@@ -62,12 +68,18 @@ class Attack {
     }
 }
 
-let hipodogeImg = './assets/mokepons_mokepon_hipodoge_attack.png';
-let capipepoImg = './assets/mokepons_mokepon_capipepo_attack.png';
-let ratigueyaImg = './assets/mokepons_mokepon_ratigueya_attack.png';
-let rattataImg = './assets/Rattata.png';
-let ratatuilleImg = './assets/ratatuille.png';
-let charmanderImg = './assets/charmander.png';
+let hipodogeImg = new Image();
+hipodogeImg.src = './assets/mokepons_mokepon_hipodoge_attack.png';
+let capipepoImg = new Image();
+capipepoImg.src = './assets/mokepons_mokepon_capipepo_attack.png';
+let ratigueyaImg = new Image();
+ratigueyaImg.src = './assets/mokepons_mokepon_ratigueya_attack.png';
+let rattataImg = new Image();
+rattataImg.src = './assets/Rattata.png';
+let ratatuilleImg = new Image();
+ratatuilleImg.src = './assets/ratatuille.png';
+let charmanderImg = new Image();
+charmanderImg.src = './assets/charmander.png';
 
 const bolaFuego = new Attack('FUEGO', 'BOLA DE FUEGO', '🔥', 200, 350, 150, 5);
 const llamarada = new Attack('FUEGO', 'LLAMARADA', '🔥', 150, 250, 100, 3);
@@ -79,12 +91,12 @@ const bolaViento = new Attack('VIENTO','BOLA DE VIENTO', '🌪️', 220, 300, 80
 const tormenta = new Attack('VIENTO','TORMENTA', '🌪️', 80, 300, 200, 6);
 const pinchos = new Attack('FUEGO','PINCHOS', '🔥', 80, 300, 200, 6);
 
-let hipodoge = new Mokepon('Hipodoge', hipodogeImg, 1200, 'AGUA');
-let capipepo = new Mokepon('Capipepo', capipepoImg, 1500, 'TIERRA');
-let ratigueya = new Mokepon('Ratigueya', ratigueyaImg, 1000, 'FUEGO');
-let rattata = new Mokepon('Rattata', rattataImg, 1100, 'TIERRA');
-let ratatuille = new Mokepon('Ratatuille', ratatuilleImg, 1400, 'VIENTO');
-const charmander = new Mokepon('Charmander', charmanderImg, 900, 'FUEGO');
+let hipodoge = new Mokepon('Hipodoge', hipodogeImg.src, 1200, 'AGUA');
+let capipepo = new Mokepon('Capipepo', capipepoImg.src, 1500, 'TIERRA');
+let ratigueya = new Mokepon('Ratigueya', ratigueyaImg.src, 1000, 'FUEGO');
+let rattata = new Mokepon('Rattata', rattataImg.src, 1100, 'TIERRA');
+let ratatuille = new Mokepon('Ratatuille', ratatuilleImg.src, 1400, 'VIENTO');
+const charmander = new Mokepon('Charmander', charmanderImg.src, 900, 'FUEGO');
 
 let newInputMokepon;
 let newLabelMokepon;
@@ -162,7 +174,11 @@ function startGame() {
     watchMapSection.style.display = 'none';
 
     selectMokeponBtn.addEventListener('click', selectPlayerMokepon);
-    openMapBtn.addEventListener('click', selectPlayerMokepon)
+    openMapBtn.addEventListener('click', () => {
+        openMap = true;
+        selectPlayerMokepon();
+        canvas.drawImage(rattataImg, 20, 40, 100, 100);
+    })
     
     restartBtn.addEventListener('click', restartGame);
 
@@ -222,7 +238,11 @@ function selectEnemyMokepon(playerMokepon) {
         enemyMokepon = deepCopy(randomMokepon);
         enemyMokeponParagraph.innerHTML = randomMokepon.name;
         livesEnemyParagraph.innerHTML = enemyLives = randomMokepon.lives;
-        selectAttackSection.style.display = 'flex';
+        if (openMap) {
+            watchMapSection.style.display = 'flex';
+        } else {
+            selectAttackSection.style.display = 'flex';
+        }
         attackListEnemy = attacksList.filter(attack => attack.element === enemyMokepon.element);
     }
 }
