@@ -9,12 +9,12 @@ body {
     justify-content: center;
     align-items: center;
 }
-.head-tittle {
+.head-title {
     font-size: 32px;
     color: white;
     font-family: 'Fredoka One', cursive;
 }
-.section-tittle {
+.section-title {
     font-size: 20px;
     color: white;
 }
@@ -42,7 +42,7 @@ input:checked + label {
 .mokepon-card img {
     width: 80px;
 }
-#select-mokepon-btn {
+.select-mokepon-btn {
     width: 180px;
     height: 40px;
     border-radius: 20px;

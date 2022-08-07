@@ -20,7 +20,12 @@ const attackEnemyDiv = document.getElementById('attacks-enemy');
 const cardsArticle = document.getElementById('mokepon-cards');
 const attackBtnsArticle = document.getElementById('attack-btns');
 
-let playerId = null
+// Map
+const watchMapSection = document.getElementById("watch-map");
+const openMapBtn = document.getElementById("open-map-btn");
+const map = document.getElementById("map");
+
+let playerId = null;
 let playerLives = 3;
 let enemyLives = 3;
 let playerMokepon;
@@ -154,17 +159,20 @@ function startGame() {
     loadImages();
     selectAttackSection.style.display = 'none';
     restartDiv.style.display = 'none';
+    watchMapSection.style.display = 'none';
 
     selectMokeponBtn.addEventListener('click', selectPlayerMokepon);
+    openMapBtn.addEventListener('click', selectPlayerMokepon)
     
     restartBtn.addEventListener('click', restartGame);
 
-    joinGame()
+    joinGame();
 }
 
 function joinGame(){
     fetch('http://localhost:8080/unirse')
         .then((res) => {
+            console.log(res)
             if (res.ok) {
                 res.text()
                     .then((response) => {
@@ -194,7 +202,7 @@ function selectPlayerMokepon() {
 }
 
 function selectMokepon(playerMokepon){
-    fetch('http://localhost:8080/mokepon/' + playerId,{
+    fetch('http://localhost:8080/mokepon/' + playerId, {
         method: "post",
         headers: {
             "Content-Type": "application/json"
@@ -207,7 +215,6 @@ function selectMokepon(playerMokepon){
 
 function selectEnemyMokepon(playerMokepon) {
     let randomMokepon = deepCopy(mokepones[randomNum(0, mokepones.length - 1)]);
-    let i = 0
     if (randomMokepon.name === playerMokepon.name) {
         console.log('Se llevó a cabo una seleccion semejante de mascota enemiga: ' + randomMokepon.name)
         selectEnemyMokepon(playerMokepon);

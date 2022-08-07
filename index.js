@@ -46,6 +46,13 @@ app.post("/mokepon/:playerId", (req, res) => {
     res.end()
 })
 
+app.post("/mokepon/:playerId/posicion", (req, res) => {
+    const playerId = req.params.playerId || ""
+    const x = req.body.x || 0
+    const y = req.body.y || 0
+    res.end()
+})
+
 app.listen(8080, () => {
     console.log("Servidor funcionando")
 })
