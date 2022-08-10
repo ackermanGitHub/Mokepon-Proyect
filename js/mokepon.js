@@ -24,7 +24,7 @@ const attackBtnsArticle = document.getElementById('attack-btns');
 const watchMapSection = document.getElementById("watch-map");
 const openMapBtn = document.getElementById("open-map-btn");
 const map = document.getElementById("map");
-let openMap = false;
+//let openMap = false;
 let canvas = map.getContext("2d");
 let interval;
 let mapBackground = new Image();
@@ -146,6 +146,7 @@ function loadImages(){
 }
 
 function loadAttacks(){
+    console.log("aqui")
     attackListPlayer = attacksList.filter(attack => attack.element === playerMokepon.element);
     let newAttackBtn;
     attackListPlayer.forEach(attack => {
@@ -196,9 +197,9 @@ function startGame() {
     restartDiv.style.display = 'none';
     watchMapSection.style.display = 'none';
 
-    selectMokeponBtn.addEventListener('click', selectPlayerMokepon);
+    //selectMokeponBtn.addEventListener('click', selectPlayerMokepon);
     openMapBtn.addEventListener('click', () => {
-        openMap = true;
+        //openMap = true;
         selectPlayerMokepon();
     })
     
@@ -234,8 +235,10 @@ function selectPlayerMokepon() {
     //selectMokepon(playerMokepon)
 
     livesPlayerParagraph.innerHTML = playerLives = playerMokepon.lives;    
-    selectEnemyMokepon(playerMokepon);
-    loadAttacks();
+    initMap();
+    watchMapSection.style.display = 'flex';
+    //selectEnemyMokepon(playerMokepon);
+    //loadAttacks();
 }
 
 function initMap(){
@@ -277,10 +280,9 @@ function selectMokepon(playerMokepon){
     })
 }
 
-function selectEnemyMokepon(playerMokepon) {
+/* function selectEnemyMokepon(playerMokepon) {
     let randomMokepon = {...mokepons[randomNum(0, mokepons.length - 1)]};
     if (randomMokepon.name === playerMokepon.name) {
-        console.log('Se llevó a cabo una seleccion semejante de mascota enemiga: ' + randomMokepon.name)
         selectEnemyMokepon(playerMokepon);
     } else {
         enemyMokepon = {...randomMokepon};
@@ -294,6 +296,13 @@ function selectEnemyMokepon(playerMokepon) {
         }
         attackListEnemy = attacksList.filter(attack => attack.element === enemyMokepon.element);
     }
+} */
+
+function startBattle() {
+    enemyMokeponParagraph.innerHTML = enemyMokepon.name;
+    livesEnemyParagraph.innerHTML = enemyLives = enemyMokepon.lives;
+    attackListEnemy = attacksList.filter(attack => attack.element === enemyMokepon.element);
+    loadAttacks();
 }
 
 function paintCanvas(){
@@ -351,6 +360,7 @@ function collisionCheck(enemy) {
     enemyMokepon = enemy;
     selectAttackSection.style.display = 'flex';
     watchMapSection.style.display = 'none';
+    startBattle();
 }
 
 function printFinalMessage(message){
