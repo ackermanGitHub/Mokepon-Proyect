@@ -25,7 +25,10 @@ const watchMapSection = document.getElementById("watch-map");
 const openMapBtn = document.getElementById("open-map-btn");
 const map = document.getElementById("map");
 let openMap = false;
-let canvas = map.getContext("2d")
+let canvas = map.getContext("2d");
+let interval;
+let mapBackground = new Image();
+mapBackground.src = './assets/mokemap.png';
 
 let playerId = null;
 let playerLives = 3;
@@ -37,22 +40,33 @@ let attackEnemy;
 let attackListPlayer;
 let attackListEnemy;
 
-let mokepones = [];
+let mokepons = [];
 let attacksList = [];
 
 class Mokepon {
-    constructor(name, image, lives, element){
+    constructor(name, image, lives, element, mapImg = image){
         this.name = name;
         this.image = image;
         this.lives = lives;
         this.element = element;
-        this.x = 20;
-        this.y = 30;
-        this.width = 80;
-        this.height = 80;
+        this.x = Math.floor(((Math.random() * 40) * 6) + 40);
+        this.y = Math.floor(((Math.random() * 40) * 4) + 40);
+        this.width = 40;
+        this.height = 40;
         this.mapImg = new Image();
-        this.mapImg.src = image;
-        mokepones.push(this);
+        this.mapImg.src = mapImg;
+        this.speedX = 0;
+        this.speedY = 0;
+        mokepons.push(this);
+    }
+    paint() {
+        canvas.drawImage(
+            this.mapImg,
+            this.x,
+            this.y,
+            this.width,
+            this.height,
+        );
     }
 }
 class Attack {
@@ -83,6 +97,13 @@ ratatuilleImg.src = './assets/ratatuille.png';
 let charmanderImg = new Image();
 charmanderImg.src = './assets/charmander.png';
 
+let hipodogeMapImg = new Image();
+hipodogeMapImg.src = './assets/hipodoge.png';
+let capipepoMapImg = new Image();
+capipepoMapImg.src = './assets/capipepo.png';
+let ratigueyaMapImg = new Image();
+ratigueyaMapImg.src = './assets/ratigueya.png';
+
 const bolaFuego = new Attack('FUEGO', 'BOLA DE FUEGO', '🔥', 200, 350, 150, 5);
 const llamarada = new Attack('FUEGO', 'LLAMARADA', '🔥', 150, 250, 100, 3);
 const bolaAgua = new Attack('AGUA', 'BOLA DE AGUA', '💧', 220, 310, 120, 4);
@@ -93,19 +114,19 @@ const bolaViento = new Attack('VIENTO','BOLA DE VIENTO', '🌪️', 220, 300, 80
 const tormenta = new Attack('VIENTO','TORMENTA', '🌪️', 80, 300, 200, 6);
 const pinchos = new Attack('FUEGO','PINCHOS', '🔥', 80, 300, 200, 6);
 
-let hipodoge = new Mokepon('Hipodoge', hipodogeImg.src, 1200, 'AGUA');
-let capipepo = new Mokepon('Capipepo', capipepoImg.src, 1500, 'TIERRA');
-let ratigueya = new Mokepon('Ratigueya', ratigueyaImg.src, 1000, 'FUEGO');
+let hipodoge = new Mokepon('Hipodoge', hipodogeImg.src, 1200, 'AGUA', hipodogeMapImg.src);
+let capipepo = new Mokepon('Capipepo', capipepoImg.src, 1500, 'TIERRA', capipepoMapImg.src);
+let ratigueya = new Mokepon('Ratigueya', ratigueyaImg.src, 1000, 'FUEGO', ratigueyaMapImg.src);
 let rattata = new Mokepon('Rattata', rattataImg.src, 1100, 'TIERRA');
 let ratatuille = new Mokepon('Ratatuille', ratatuilleImg.src, 1400, 'VIENTO');
-const charmander = new Mokepon('Charmander', charmanderImg.src, 900, 'FUEGO');
+let charmander = new Mokepon('Charmander', charmanderImg.src, 900, 'FUEGO');
 
 let newInputMokepon;
 let newLabelMokepon;
 let newParagraphMokepon;
 let newImageMokepon ;
 function loadImages(){
-    mokepones.forEach(mokepon => {
+    mokepons.forEach(mokepon => {
         newInputMokepon = document.createElement('input');
         newInputMokepon.type = 'radio';
         newInputMokepon.name = 'mokepon';
@@ -198,10 +219,9 @@ function joinGame(){
             }
         })
 }
-
 function selectPlayerMokepon() {
     selectMokeponSection.style.display = 'none';
-    let selectedMokepon = mokepones.find(mokepon => document.getElementById(mokepon.name.toLowerCase()).checked);
+    let selectedMokepon = mokepons.find(mokepon => document.getElementById(mokepon.name.toLowerCase()).checked);
 
     if(selectedMokepon === undefined){
         alert('Selecciona una mascota');
@@ -218,6 +238,33 @@ function selectPlayerMokepon() {
     loadAttacks();
 }
 
+function initMap(){
+    map.width = 320;
+    map.height = 240;
+    interval = setInterval(paintCharacter, 50);
+
+    window.addEventListener('keydown', (event) => {
+        switch (event.key) {
+            case 'ArrowUp':
+                moveUp();
+                break;
+            case 'ArrowDown':
+                moveDown();
+                break;
+            case 'ArrowRight':
+                moveRight();
+                break;
+            case 'ArrowLeft':
+                moveLeft();
+                break;
+            default:
+                break;
+        }
+    });
+    window.addEventListener('keyup', stopMoving);
+
+}
+
 function selectMokepon(playerMokepon){
     fetch('http://localhost:8080/mokepon/' + playerId, {
         method: "post",
@@ -231,7 +278,7 @@ function selectMokepon(playerMokepon){
 }
 
 function selectEnemyMokepon(playerMokepon) {
-    let randomMokepon = {...mokepones[randomNum(0, mokepones.length - 1)]};
+    let randomMokepon = {...mokepons[randomNum(0, mokepons.length - 1)]};
     if (randomMokepon.name === playerMokepon.name) {
         console.log('Se llevó a cabo una seleccion semejante de mascota enemiga: ' + randomMokepon.name)
         selectEnemyMokepon(playerMokepon);
@@ -240,8 +287,8 @@ function selectEnemyMokepon(playerMokepon) {
         enemyMokeponParagraph.innerHTML = randomMokepon.name;
         livesEnemyParagraph.innerHTML = enemyLives = randomMokepon.lives;
         if (openMap) {
+            initMap();
             watchMapSection.style.display = 'flex';
-            paintCharacter();
         } else {
             selectAttackSection.style.display = 'flex';
         }
@@ -250,24 +297,30 @@ function selectEnemyMokepon(playerMokepon) {
 }
 
 function paintCharacter(){
+    playerMokepon.x += playerMokepon.speedX;
+    playerMokepon.y += playerMokepon.speedY;
     canvas.clearRect(0, 0, map.width, map.height);
-    canvas.drawImage(playerMokepon.mapImg, playerMokepon.x, playerMokepon.y, playerMokepon.width, playerMokepon.height);
+    canvas.drawImage(mapBackground, 0, 0, map.width, map.height);
+    playerMokepon.paint();
+    mokepons.forEach(element => {
+        element.paint();
+    });
 }
-function moveMokeponRight(){
-    playerMokepon.x += 5;
-    paintCharacter();
+function moveRight(){
+    playerMokepon.speedX = 5;
 }
-function moveMokeponLeft(){
-    playerMokepon.x -= 5;
-    paintCharacter();
+function moveLeft(){
+    playerMokepon.speedX = -5;
 }
-function moveMokeponUp(){
-    playerMokepon.y -= 5;
-    paintCharacter();
+function moveUp(){
+    playerMokepon.speedY = -5;
 }
-function moveMokeponDown(){
-    playerMokepon.y += 5;
-    paintCharacter();
+function moveDown(){
+    playerMokepon.speedY = 5;
+}
+function stopMoving(){
+    playerMokepon.speedX = 0;
+    playerMokepon.speedY = 0;
 }
 
 function printFinalMessage(message){
@@ -306,6 +359,7 @@ function isObject(subject) {
 function isArray(subject) {
     return Array.isArray(subject);
 }
+// Best Objects Copier
 function deepCopy(subject) {
     let copy;
     const subjectIsArray = isArray(subject);

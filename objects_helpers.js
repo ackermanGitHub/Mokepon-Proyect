@@ -86,3 +86,41 @@ function deepCopy(subject) {
     }
     return copy;
 }
+
+// make a sound beep
+const myAudioContext = new AudioContext();
+function beep(duration, frequency, volume){
+    return new Promise((resolve, reject) => {
+        // Establecer la duración predeterminada si no se proporciona
+        duration = duration || 200;
+        frequency = frequency || 440;
+        volume = volume || 100;
+
+        try{
+            let oscillatorNode = myAudioContext.createOscillator();
+            let gainNode = myAudioContext.createGain();
+            oscillatorNode.connect(gainNode);
+
+            // Establecer la frecuencia del oscilador en hercios
+            oscillatorNode.frequency.value = frequency;
+
+            // Establecer el tipo de oscilador
+            oscillatorNode.type= "square";
+            gainNode.connect(myAudioContext.destination);
+
+            // Establecer la ganancia al volumen
+            gainNode.gain.value = volume * 0.01;
+
+            // Inicie el audio con la duración deseada
+            oscillatorNode.start(myAudioContext.currentTime);
+            oscillatorNode.stop(myAudioContext.currentTime + duration * 0.001);
+
+            // Resuelve la promesa cuando se acabe el sonido.
+            oscillatorNode.onended = () => {
+                resolve();
+            };
+        }catch(error){
+            reject(error);
+        }
+    });
+}
