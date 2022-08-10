@@ -57,8 +57,15 @@ input:checked + label {
     align-items: center;
     justify-content: center;
 }
-#map {
+#watch-map button{
+    width: 80px;
+    height: 40px;
+    border-radius: 20px;
+    background: transparent;
     border: 2px solid white;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    margin: 10px 0;
 }
 input {
     display: none;
@@ -116,5 +123,12 @@ input {
 @media (max-width: 580px) {
     .mokepon-cards, .attacks-cards {
         flex-direction: column;
+    }
+}
+@media (max-width: 290px) {
+    #watch-map {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 }

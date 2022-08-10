@@ -29,6 +29,13 @@ let canvas = map.getContext("2d");
 let interval;
 let mapBackground = new Image();
 mapBackground.src = './assets/mokemap.png';
+let mapWidth = window.innerWidth - 20;
+if (mapWidth > 350) {
+    mapWidth = 330;
+}
+let mapHeight = mapWidth * 600 / 800;
+map.width = mapWidth;
+map.height = mapHeight;
 
 let playerId = null;
 let playerLives = 3;
@@ -49,10 +56,10 @@ class Mokepon {
         this.image = image;
         this.lives = lives;
         this.element = element;
-        this.x = Math.floor(((Math.random() * 40) * 6) + 40);
-        this.y = Math.floor(((Math.random() * 40) * 4) + 40);
         this.width = 40;
         this.height = 40;
+        this.x = randomNum(0, map.width - this.width);
+        this.y = randomNum(0, map.height - this.height);
         this.mapImg = new Image();
         this.mapImg.src = mapImg;
         this.speedX = 0;
@@ -146,7 +153,6 @@ function loadImages(){
 }
 
 function loadAttacks(){
-    console.log("aqui")
     attackListPlayer = attacksList.filter(attack => attack.element === playerMokepon.element);
     let newAttackBtn;
     attackListPlayer.forEach(attack => {
@@ -227,23 +233,23 @@ function selectPlayerMokepon() {
     if(selectedMokepon === undefined){
         alert('Selecciona una mascota');
         location.reload();
-    } else {
-        playerMokepon = selectedMokepon;
-        playerMokeponParagraph.innerHTML = playerMokepon.name;
     }
 
-    //selectMokepon(playerMokepon)
+    playerMokepon = selectedMokepon;
+    playerMokeponParagraph.innerHTML = playerMokepon.name;
+    livesPlayerParagraph.innerHTML = playerLives = playerMokepon.lives;
 
-    livesPlayerParagraph.innerHTML = playerLives = playerMokepon.lives;    
+    //selectMokepon(playerMokepon)
+ 
+    watchMapSection.style.display = 'flex';   
     initMap();
-    watchMapSection.style.display = 'flex';
     //selectEnemyMokepon(playerMokepon);
     //loadAttacks();
 }
 
 function initMap(){
-    map.width = 320;
-    map.height = 240;
+    //map.width = 320;
+    //map.height = 240;
     interval = setInterval(paintCanvas, 50);
 
     window.addEventListener('keydown', (event) => {
@@ -259,7 +265,7 @@ function initMap(){
                 break;
             case 'ArrowLeft':
                 moveLeft();
-                break;
+                break; 
             default:
                 break;
         }
@@ -310,7 +316,6 @@ function paintCanvas(){
     playerMokepon.y += playerMokepon.speedY;
     canvas.clearRect(0, 0, map.width, map.height);
     canvas.drawImage(mapBackground, 0, 0, map.width, map.height);
-    playerMokepon.paint();
     mokepons.forEach(element => {
         element.paint();
     });
