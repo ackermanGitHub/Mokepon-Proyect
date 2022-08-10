@@ -241,7 +241,7 @@ function selectPlayerMokepon() {
 function initMap(){
     map.width = 320;
     map.height = 240;
-    interval = setInterval(paintCharacter, 50);
+    interval = setInterval(paintCanvas, 50);
 
     window.addEventListener('keydown', (event) => {
         switch (event.key) {
@@ -296,7 +296,7 @@ function selectEnemyMokepon(playerMokepon) {
     }
 }
 
-function paintCharacter(){
+function paintCanvas(){
     playerMokepon.x += playerMokepon.speedX;
     playerMokepon.y += playerMokepon.speedY;
     canvas.clearRect(0, 0, map.width, map.height);
@@ -305,6 +305,13 @@ function paintCharacter(){
     mokepons.forEach(element => {
         element.paint();
     });
+    if (playerMokepon.speedX !== 0 || playerMokepon.speedY !== 0) {
+        mokepons.forEach(element => {
+            if(element !== playerMokepon){
+                collisionCheck(element);
+            }
+        });
+    }
 }
 function moveRight(){
     playerMokepon.speedX = 5;
@@ -321,6 +328,29 @@ function moveDown(){
 function stopMoving(){
     playerMokepon.speedX = 0;
     playerMokepon.speedY = 0;
+}
+function collisionCheck(enemy) {
+    let topEnemy = enemy.y + 25;
+    let bottomEnemy = enemy.y + enemy.height - 25;
+    let rightEnemy = enemy.x + enemy.width - 25;
+    let leftEnemy = enemy.x + 25;
+    let topPlayerMokepon = playerMokepon.y;
+    let bottomPlayerMokepon = playerMokepon.y + enemy.height;
+    let rightPlayerMokepon = playerMokepon.x + enemy.width;
+    let leftPlayerMokepon = playerMokepon.x;
+
+    if (
+        bottomPlayerMokepon < topEnemy ||
+        topPlayerMokepon > bottomEnemy ||
+        rightPlayerMokepon < leftEnemy ||
+        leftPlayerMokepon > rightEnemy
+    ) {
+        return;
+    }
+    stopMoving();
+    enemyMokepon = enemy;
+    selectAttackSection.style.display = 'flex';
+    watchMapSection.style.display = 'none';
 }
 
 function printFinalMessage(message){
