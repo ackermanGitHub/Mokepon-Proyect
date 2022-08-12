@@ -37,7 +37,13 @@ let mapHeight = mapWidth * 600 / 800;
 map.width = mapWidth;
 map.height = mapHeight;
 
+// backend
+let enemiesMokepons = null;
 let playerId = null;
+let enemyId = null;
+let enemyDamage = null;
+let playerDamage = null;
+
 let playerLives = 3;
 let enemyLives = 3;
 let playerMokepon;
@@ -51,7 +57,7 @@ let mokepons = [];
 let attacksList = [];
 
 class Mokepon {
-    constructor(name, image, lives, element, mapImg = image){
+    constructor(name, image, lives, element, mapImg = image, id = null){
         this.name = name;
         this.image = image;
         this.lives = lives;
@@ -64,6 +70,7 @@ class Mokepon {
         this.mapImg.src = mapImg;
         this.speedX = 0;
         this.speedY = 0;
+        this.id = id;
         mokepons.push(this);
     }
     paint() {
@@ -132,6 +139,7 @@ let newInputMokepon;
 let newLabelMokepon;
 let newParagraphMokepon;
 let newImageMokepon ;
+
 function loadImages(){
     mokepons.forEach(mokepon => {
         newInputMokepon = document.createElement('input');
@@ -211,7 +219,7 @@ function startGame() {
     
     restartBtn.addEventListener('click', restartGame);
 
-    //joinGame();
+    joinGame();
 }
 
 function joinGame(){
@@ -239,7 +247,7 @@ function selectPlayerMokepon() {
     playerMokeponParagraph.innerHTML = playerMokepon.name;
     livesPlayerParagraph.innerHTML = playerLives = playerMokepon.lives;
 
-    //selectMokepon(playerMokepon)
+    selectMokepon(playerMokepon)
  
     watchMapSection.style.display = 'flex';   
     initMap();
@@ -275,34 +283,16 @@ function initMap(){
 }
 
 function selectMokepon(playerMokepon){
-    fetch('http://localhost:8080/mokepon/' + playerId, {
+    fetch(`http://localhost:8080/mokepon/${playerId}`, {
         method: "post",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            mokepon: playerMokepon.name,
+            mokepon: playerMokepon.name
         })
     })
 }
-
-/* function selectEnemyMokepon(playerMokepon) {
-    let randomMokepon = {...mokepons[randomNum(0, mokepons.length - 1)]};
-    if (randomMokepon.name === playerMokepon.name) {
-        selectEnemyMokepon(playerMokepon);
-    } else {
-        enemyMokepon = {...randomMokepon};
-        enemyMokeponParagraph.innerHTML = randomMokepon.name;
-        livesEnemyParagraph.innerHTML = enemyLives = randomMokepon.lives;
-        if (openMap) {
-            initMap();
-            watchMapSection.style.display = 'flex';
-        } else {
-            selectAttackSection.style.display = 'flex';
-        }
-        attackListEnemy = attacksList.filter(attack => attack.element === enemyMokepon.element);
-    }
-} */
 
 function startBattle() {
     enemyMokeponParagraph.innerHTML = enemyMokepon.name;
@@ -316,17 +306,55 @@ function paintCanvas(){
     playerMokepon.y += playerMokepon.speedY;
     canvas.clearRect(0, 0, map.width, map.height);
     canvas.drawImage(mapBackground, 0, 0, map.width, map.height);
-    mokepons.forEach(element => {
-        element.paint();
+    playerMokepon.paint();
+
+    sendPosition(playerMokepon.x, playerMokepon.y);
+    
+    if (enemiesMokepons === null) {
+        return;
+    }
+
+    enemiesMokepons.forEach(mokepon => {
+        mokepon.paint();
     });
+
     if (playerMokepon.speedX !== 0 || playerMokepon.speedY !== 0) {
-        mokepons.forEach(element => {
+        enemiesMokepons.forEach(element => {
             if(element !== playerMokepon){
                 collisionCheck(element);
             }
         });
     }
 }
+function sendPosition(x, y){
+    fetch(`http://localhost:8080/mokepon/${playerId}/position`, {
+        method: "post",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            x,
+            y
+        })
+    })
+    .then((res) => {
+        if (res.ok) {
+            res.json()
+                .then(({enemies}) => {
+                    let newMokepon = null;
+                    enemiesMokepons = enemies.map(enemy => {
+                        let newPokemonName = enemy.mokepon.name;
+                        newMokepon = mokepons.find(mokepon => newPokemonName === mokepon.name);
+                        let result = new Mokepon(newMokepon.name, newMokepon.image, newMokepon.lives, newMokepon.element, newMokepon.mapImg.src, enemy.id)
+                        result.x = enemy.x;
+                        result.y = enemy.y;
+                        return result;
+                    })
+                })
+        }
+    })
+}
+
 function moveRight(){
     playerMokepon.speedX = 5;
 }
@@ -360,12 +388,15 @@ function collisionCheck(enemy) {
         leftPlayerMokepon > rightEnemy
     ) {
         return;
+    } else if(enemyMokepon === undefined){
+        stopMoving();
+        interval = false;
+        enemyMokepon = enemy;
+        selectAttackSection.style.display = 'flex';
+        watchMapSection.style.display = 'none';
+        startBattle();
     }
-    stopMoving();
-    enemyMokepon = enemy;
-    selectAttackSection.style.display = 'flex';
-    watchMapSection.style.display = 'none';
-    startBattle();
+    
 }
 
 function printFinalMessage(message){
@@ -376,8 +407,10 @@ function printFinalMessage(message){
 function checkLives(){
     if (enemyLives <= 0) {
         printFinalMessage('FELICITACIONES GANASTE');
+        clearInterval(interval);
     } else if(playerLives <= 0) {
         printFinalMessage('LO SIENTO, PERDISTE');
+        clearInterval(interval);
     }
 }
 
@@ -397,38 +430,4 @@ window.addEventListener('load', startGame);
 //helpers
 function randomNum(min, max){
     return Math.floor(Math.random() * (max - min + 1) + min);
-}
-function isObject(subject) {
-    return typeof subject == 'object';
-}
-function isArray(subject) {
-    return Array.isArray(subject);
-}
-// Best Objects Copier
-function deepCopy(subject) {
-    let copy;
-    const subjectIsArray = isArray(subject);
-    const subjectIsObject = isObject(subject);
-
-    if (subjectIsArray) {
-        copy = [];
-    } else if (subjectIsObject) {
-        copy = {};
-    } else {
-        return subject;
-    }
-
-    for (key in subject) {
-        const keyIsObject = isObject(subject[key])
-        if (keyIsObject) {
-            copy[key] = deepCopy(subject[key]);
-        } else {
-            if (subjectIsArray) {
-                copy.push(subject[key]);
-            } else {
-                copy[key] = subject[key];
-            }
-        }
-    }
-    return copy;
 }
