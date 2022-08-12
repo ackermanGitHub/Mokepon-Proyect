@@ -396,7 +396,6 @@ function collisionCheck(enemy) {
         watchMapSection.style.display = 'none';
         startBattle();
     }
-    
 }
 
 function printFinalMessage(message){

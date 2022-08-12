@@ -69,6 +69,27 @@ app.post("/mokepon/:playerId/position", (req, res) => {
     })
 })
 
+app.post("/mokepon/:playerId/damage", (req, res) => {
+    const playerId = req.params.playerId || ""
+    const attack = req.body.attack || []
+    
+    const playerIndex = players.findIndex((player) => playerId === player.id)
+    
+    if (playerIndex >= 0) {
+        players[playerIndex].assignDamage(damage)
+    }
+
+    res.end()
+})
+
+app.get("/mokepon/:playerId/damage", (req, res) => {
+    const playerId = req.params.playerId || ""
+    const player = players.find(player => player.id = playerId)
+    res.send({
+        damage: player.damage || []
+    })
+})
+
 app.listen(8080, () => {
     console.log("Servidor funcionando")
 })
